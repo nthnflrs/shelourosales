@@ -51,21 +51,11 @@ public class ResumeBuilder extends JFrame {
         homePanel = createHomePanel();
         formPanel = createFormPanel();
         samplePanel = new JPanel(); // Placeholder for sample panel
-
-       
-        formScrollPane = new JScrollPane(formPanel);
-        formScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        formScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-
         
-        sampleScrollPane = new JScrollPane(samplePanel);
-        sampleScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        sampleScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-
         // Add panels to the frame
         getContentPane().add(homePanel, "Home");
-        getContentPane().add(formScrollPane, "Form"); // Use JScrollPane here
-        getContentPane().add(sampleScrollPane, "Sample");
+        getContentPane().add(formPanel, "Form"); // Use JScrollPane here
+        getContentPane().add(samplePanel, "Sample");
 
         // Show home panel initially
         showPanel("Home");
@@ -192,10 +182,17 @@ public class ResumeBuilder extends JFrame {
                 showPanel("Home");
             }
         });
+        panel.setPreferredSize(new Dimension(800, 800));
+        
+        JScrollPane sampleScrollPane = new JScrollPane(panel);
+        sampleScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        sampleScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-        return panel;
+        JPanel container = new JPanel(new BorderLayout());
+        container.add(sampleScrollPane, BorderLayout.CENTER);
+
+        return container;
     }
-
     private void addCategory(JPanel panel, String text, int x, int y, int width, int height, int fontSize) {
         JLabel label = new JLabel(text);
         label.setFont(new Font("Poppins", Font.BOLD, fontSize));
@@ -356,11 +353,15 @@ public class ResumeBuilder extends JFrame {
     private void showSamplePage() {
         samplePanel.removeAll();
         samplePanel.setLayout(null);
-
+        
+        int paperWidth = 500; // A4 width in pixels
+        int paperHeight = 595; // A4 height in pixels
+        
+        
         // Create a panel to act as a "long bond paper"
         JPanel paperPanel = new JPanel();
         paperPanel.setLayout(null);
-        paperPanel.setBounds(50, 50, 500, 700);
+        paperPanel.setBounds(20, 20, paperWidth, paperHeight);
         paperPanel.setBackground(Color.WHITE);
         paperPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
@@ -496,13 +497,6 @@ public class ResumeBuilder extends JFrame {
         printButton.setBounds(220, 670, 80, 25);
         paperPanel.add(printButton);
 
-        printButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                printResume(paperPanel);
-            }
-        });
-
         // Add Back button
         JButton backButton = new JButton("Back");
         backButton.setBounds(320, 670, 80, 25);
@@ -514,10 +508,19 @@ public class ResumeBuilder extends JFrame {
                 showPanel("Form");
             }
         });
+        
+        paperPanel.setPreferredSize(new Dimension(800, 800));
 
-        samplePanel.add(paperPanel);
+        // Adding JScrollPane to paperPanel
+        JScrollPane paperScrollPane = new JScrollPane(paperPanel);
+        paperScrollPane.setBounds(50, 10, paperWidth, paperHeight);
+        paperScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        paperScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
+        samplePanel.add(paperScrollPane);
         samplePanel.revalidate();
         samplePanel.repaint();
+
         showPanel("Sample");
     }
 
